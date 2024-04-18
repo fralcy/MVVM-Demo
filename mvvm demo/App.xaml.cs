@@ -1,6 +1,7 @@
 ﻿using System.Configuration;
 using System.Data;
 using System.Windows;
+using mvvm_demo.Views;
 
 namespace mvvm_demo
 {
@@ -9,6 +10,6 @@ namespace mvvm_demo
     /// </summary>
     public partial class App : Application
     {
-    }
 
+    }
 }
