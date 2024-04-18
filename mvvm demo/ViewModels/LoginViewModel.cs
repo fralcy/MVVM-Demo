@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace mvvm_demo.ViewModels
 {
-    public class LoginViewModel : BaseViewModel
+    public class LoginViewModel : ViewModelBase
     {
 
     }

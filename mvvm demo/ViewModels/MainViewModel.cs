@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace mvvm_demo.ViewModels
 {
-    public class MainViewModel: BaseViewModel
+    public class MainViewModel: ViewModelBase
     {
         public MainViewModel() 
         {
