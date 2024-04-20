@@ -79,13 +79,13 @@ namespace mvvm_demo.ViewModels
                         }
                         else
                         {
-                            System.Windows.MessageBox.Show("Incorrect login information!");
+                            MessageBox.Show("Incorrect login information!");
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.MessageBox.Show("Error: " + ex.Message);
+                    MessageBox.Show("Error: " + ex.Message);
                 }
             }
         }

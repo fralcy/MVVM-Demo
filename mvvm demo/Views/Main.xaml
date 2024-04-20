@@ -7,14 +7,30 @@
         mc:Ignorable="d"
         DataContext="{StaticResource MainVM}"
         Title="Main" Height="450" Width="600"
-        Name="mainWindow">
+        Name="mainWindow"
+        WindowStartupLocation="CenterScreen">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadedWindowCommand}" 
                                    CommandParameter="{Binding ElementName=mainWindow}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
-        <TextBlock FontSize="40"> hello world!</TextBlock>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Margin" Value="10,10,10,10"/>
+                </Style>
+            </StackPanel.Resources>
+            <Button Content="Button 1" Command="{Binding Feature1Command}"/>
+            <Button Content="Button 2" Command="{Binding Feature2Command}"/>
+            <Button Content="Button 3" Command="{Binding Feature3Command}"/>
+            <Button Content="Button 4" Command="{Binding Feature4Command}"/>
+            <Button Content="Button 5" Command="{Binding Feature5Command}"/>
+        </StackPanel>
     </Grid>
 </Window>
