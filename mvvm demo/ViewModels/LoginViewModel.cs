@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Security;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-
+﻿using System.Windows.Input;
+using mvvm_demo.Resources;
+using Microsoft.Data.SqlClient;
+using System.Windows;
+using System.Windows.Controls;
 namespace mvvm_demo.ViewModels
 {
     public class LoginViewModel : ViewModelBase
     {
         //Fields
         private string _username;
-        private SecureString _password;
+        private string _password;
+        public bool isLogin { get; private set; } = false;
 
         //Properties
         public string Username
@@ -29,7 +25,7 @@ namespace mvvm_demo.ViewModels
                 OnPropertyChanged();
             }
         }
-        public SecureString Password
+        public string Password
         {
             get
             {
@@ -42,11 +38,62 @@ namespace mvvm_demo.ViewModels
             }
         }
         //Command
-        public ICommand LoginCommand { get; }
+        public ICommand LoginCommand { get; set;}
+        public ICommand PasswordChangedCommand { get; set; }
+
+        // Delegate to store the close window action
+        private Action closeAction;
         //Constructor
         public LoginViewModel()
         {
-           
+            Username = "";
+            Password = "";
+            LoginCommand = new RelayCommand<Window>((p) => { return true; }, (p) => { Login(p); });
+            PasswordChangedCommand = new RelayCommand<PasswordBox>((p) => { return true; }, (p) => { Password = p.Password; });
+        }
+
+        private void Login(Window p)
+        {
+            if (p == null) { return; }
+            using (SqlConnection connection = new SqlConnection(Program.connectionString))
+            {
+                try
+                {
+                    // Open the connection
+                    connection.Open();
+
+                    // Example: Execute a query
+                    string query = "SELECT 1 FROM TB WHERE Username = @Username AND Pass = @Password";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        // Add parameters to prevent SQL injection
+                        command.Parameters.AddWithValue("@Username", Username);
+                        command.Parameters.AddWithValue("@Password", Password);
+
+                        // Execute the command
+                        object result = command.ExecuteScalar();
+                        if (result != null)
+                        {
+                            isLogin = true;
+                            p.Close();
+                        }
+                        else
+                        {
+                            System.Windows.MessageBox.Show("Incorrect login information!");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show("Error: " + ex.Message);
+                }
+            }
+        }
+
+        // Function to set the close action from the view
+        public void SetCloseAction(Action close)
+        {
+            closeAction = close;
         }
     }
 }

@@ -1,0 +1,44 @@
+﻿<Window x:Class="mvvm_demo.Views.LoginWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        Width="300"
+        Height="300"
+             mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        DataContext="{StaticResource LoginVM}"
+        Title="Login"
+        Name="loginWindow">
+    <Grid VerticalAlignment="Center"
+          HorizontalAlignment="Center"
+          Width="200">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Username:" Grid.Row="0" Margin="10,10,10,10"/>
+        <TextBox Text="{Binding Username}" Grid.Row="1" Margin="10,10,10,10" />
+
+        <TextBlock Text="Password:" Grid.Row="2" Margin="10,10,10,10"/>
+        <PasswordBox x:Name="FloatingPasswordBox" Grid.Row="3" Margin="10,10,10,10">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="PasswordChanged">
+                    <i:InvokeCommandAction Command="{Binding PasswordChangedCommand}" 
+                                   CommandParameter="{Binding ElementName=FloatingPasswordBox}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </PasswordBox>
+
+        <Button IsDefault="True" Content="Login" Grid.Row="4" Margin="10,10,10,10" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=loginWindow}"/>
+    </Grid>
+</Window>
