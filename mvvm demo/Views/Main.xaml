@@ -26,7 +26,7 @@
                     <Setter Property="Margin" Value="10,10,10,10"/>
                 </Style>
             </StackPanel.Resources>
-            <Button Content="Button 1" Command="{Binding Feature1Command}"/>
+            <Button Content="User Management" Command="{Binding Feature1Command}"/>
             <Button Content="Button 2" Command="{Binding Feature2Command}"/>
             <Button Content="Button 3" Command="{Binding Feature3Command}"/>
             <Button Content="Button 4" Command="{Binding Feature4Command}"/>

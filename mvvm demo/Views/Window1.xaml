@@ -3,11 +3,45 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:mvvm_demo.Views"
         mc:Ignorable="d"
-        Title="Window1" Height="450" Width="600"
-        WindowStartupLocation="CenterScreen">
-    <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
-        <TextBlock FontSize="40" Text="Feature 1"/>
+        Title="User Management" Height="450" Width="600"
+        WindowStartupLocation="CenterScreen"
+        DataContext="{StaticResource Window1VM}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <WrapPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="ID:" Grid.Row="0" Margin="10,10,10,10"/>
+                <TextBox Text="{Binding ID, UpdateSourceTrigger=PropertyChanged}" Margin="5 5 15 5" Width="100"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="User:" Grid.Row="0" Margin="10,10,10,10"/>
+                <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Margin="5 5 15 5" Width="100"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Password:" Grid.Row="0" Margin="10,10,10,10"/>
+                <TextBox Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" Margin="5 5 15 5" Width="100"/>
+            </StackPanel>
+        </WrapPanel>
+        <WrapPanel Grid.Row="1">
+            <Button Command="{Binding AddCommand}" Content="Thêm" Margin="5" Width="100"></Button>
+            <Button Command="{Binding EditCommand}" Content="Sửa" Margin="5" Width="100"></Button>
+            <Button Command="{Binding DeleteCommand}" Content="Xóa" Margin="5" Width="100"></Button>
+        </WrapPanel>
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Visible">
+            <ListView ItemsSource="{Binding List}" SelectedItem="{Binding SelectedItem, Mode=OneWayToSource}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Id" DisplayMemberBinding="{Binding ID}"></GridViewColumn>
+                        <GridViewColumn Header="Username" DisplayMemberBinding="{Binding Username}"></GridViewColumn>
+                        <GridViewColumn Header="Pass" DisplayMemberBinding="{Binding Password}"></GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </ScrollViewer>
     </Grid>
 </Window>
