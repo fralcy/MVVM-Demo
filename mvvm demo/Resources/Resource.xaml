@@ -3,5 +3,5 @@
                     xmlns:viewmodel="clr-namespace:mvvm_demo.ViewModels">
     <viewmodel:MainViewModel x:Key="MainVM"/>
     <viewmodel:LoginViewModel x:Key="LoginVM"/>
-    <viewmodel:Window1ViewModel x:Key="Window1VM"/>
+    <viewmodel:UserViewModel x:Key="UserVM"/>
 </ResourceDictionary>

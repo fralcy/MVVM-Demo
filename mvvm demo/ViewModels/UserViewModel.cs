@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace mvvm_demo.ViewModels
 {
-    public class Window1ViewModel: ViewModelBase
+    public class UserViewModel: ViewModelBase
     {
         private ObservableCollection<User> _List;
         public ObservableCollection<User> List { get => _List; set { _List = value; OnPropertyChanged(); } }
@@ -40,7 +40,7 @@ namespace mvvm_demo.ViewModels
         public ICommand EditCommand { get; set; }
         public ICommand DeleteCommand { get; set; }
 
-        public Window1ViewModel()
+        public UserViewModel()
         {
             List = LoadData();
 
