@@ -6,7 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         DataContext="{StaticResource MainVM}"
-        Title="Main" Height="450" Width="600"
+        Title="Main" Height="450" Width="800"
         Name="mainWindow"
         WindowStartupLocation="CenterScreen">
     <i:Interaction.Triggers>
@@ -16,16 +16,17 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Button}">
                     <Setter Property="Margin" Value="10,10,10,10"/>
                 </Style>
             </StackPanel.Resources>
+            <TextBlock HorizontalAlignment="Center" Text="Menu" FontSize="24"/>
             <Button Content="User Management" Command="{Binding Feature1Command}"/>
             <Button Content="Button 2" Command="{Binding Feature2Command}"/>
             <Button Content="Button 3" Command="{Binding Feature3Command}"/>

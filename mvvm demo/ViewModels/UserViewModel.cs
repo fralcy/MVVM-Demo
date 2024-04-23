@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using mvvm_demo.Resources;
 using System.Windows;
+using System.Data;
 
 namespace mvvm_demo.ViewModels
 {
@@ -11,6 +12,8 @@ namespace mvvm_demo.ViewModels
     {
         private ObservableCollection<User> _List;
         public ObservableCollection<User> List { get => _List; set { _List = value; OnPropertyChanged(); } }
+        private ObservableCollection<Role> _Roles;
+        public ObservableCollection<Role> Roles { get => _Roles; set { _Roles = value; OnPropertyChanged(); } }
 
         private User _SelectedItem;
         public User SelectedItem
@@ -25,7 +28,18 @@ namespace mvvm_demo.ViewModels
                     ID = SelectedItem.ID;
                     Username = SelectedItem.Username;
                     Password = SelectedItem.Password;
+                    Role = SelectedItem.UserRole.RoleName;
+                    SelectedRole = SelectedItem.UserRole;
                 }
+            }
+        }
+        private Role _SelectedRole;
+        public Role SelectedRole { 
+            get => _SelectedRole;
+            set
+            {
+                _SelectedRole = value;
+                OnPropertyChanged();
             }
         }
         private int _ID;
@@ -34,6 +48,8 @@ namespace mvvm_demo.ViewModels
         public string Username { get => _Username; set { _Username = value; OnPropertyChanged(); } }
         private string _Password;
         public string Password { get => _Password; set { _Password = value; OnPropertyChanged(); } }
+        private string _Role;
+        public string Role { get => _Role; set { _Role = value; OnPropertyChanged(); } }
 
 
         public ICommand AddCommand { get; set; }
@@ -43,7 +59,7 @@ namespace mvvm_demo.ViewModels
         public UserViewModel()
         {
             List = LoadData();
-
+            Roles = LoadRole();
             AddCommand = new RelayCommand<object>((p) =>
             {
                 foreach (var item in List)
@@ -86,14 +102,34 @@ namespace mvvm_demo.ViewModels
                 DeleteData();
             });
         }
-
+        private ObservableCollection<Role> LoadRole()
+        {
+            var data = new ObservableCollection<Role>();
+            using (var connection = new SqlConnection(Program.connectionString))
+            {
+                connection.Open();
+                var command = new SqlCommand("SELECT * FROM TB2", connection);
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        data.Add(new Role
+                        {
+                            ID = reader.GetInt32(0),
+                            RoleName = reader.GetString(1), // Assuming Id is the first column (index 0)
+                        });
+                    }
+                }
+            }
+            return data;
+        }
         private ObservableCollection<User> LoadData()
         {
             var data = new ObservableCollection<User>();
             using (var connection = new SqlConnection(Program.connectionString))
             {
                 connection.Open();
-                var command = new SqlCommand("SELECT * FROM TB", connection);
+                var command = new SqlCommand("SELECT tb.Id, Username, Pass, tb2.Id, tb2.access FROM TB, TB2 where TB.access=TB2.id", connection);
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -103,8 +139,8 @@ namespace mvvm_demo.ViewModels
                             ID = reader.GetInt32(0),
                             Username = reader.GetString(1), // Assuming Id is the first column (index 0)
                             Password = reader.GetString(2), // Assuming Name is the second column (index 1)
-                                                            // Map other properties from reader based on column indexes
-                        }) ;
+                            UserRole = new Role{ ID = reader.GetInt32(3), RoleName = reader.GetString(4) }// Map other properties from reader based on column indexes
+                        });
                     }
                 }
             }
@@ -121,13 +157,14 @@ namespace mvvm_demo.ViewModels
                     connection.Open();
 
                     // Example: Execute a query
-                    string query = "INSERT INTO TB (ID, USERNAME, PASS) VALUES (@ID, @Username, @Password)";
+                    string query = "INSERT INTO TB (ID, USERNAME, PASS, Access) VALUES (@ID, @Username, @Password, @Role)";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         // Add parameters to prevent SQL injection
                         command.Parameters.AddWithValue("@ID", ID);
                         command.Parameters.AddWithValue("@Username", Username);
                         command.Parameters.AddWithValue("@Password", Password);
+                        command.Parameters.AddWithValue("@Role", SelectedRole.ID);
 
                         int rowsAffected = command.ExecuteNonQuery();
 
@@ -150,11 +187,11 @@ namespace mvvm_demo.ViewModels
             }
             List.Add(new User
             {
-                ID = _ID,
-                Username = _Username, // Assuming Id is the first column (index 0)
-                Password = _Password, // Assuming Name is the second column (index 1)
-                                                // Map other properties from reader based on column indexes
-            });
+                ID = ID,
+                Username = Username, // Assuming Id is the first column (index 0)
+                Password = Password, // Assuming Name is the second column (index 1)
+                UserRole = SelectedRole// Map other properties from reader based on column indexes
+            }) ;
         }
 
         private void EditData()
@@ -167,13 +204,14 @@ namespace mvvm_demo.ViewModels
                     connection.Open();
 
                     // Example: Execute a query
-                    string query = "UPDATE TB SET Username = @Username, Pass = @Password WHERE ID = @ID";
+                    string query = "UPDATE TB SET Username = @Username, Pass = @Password, Access = @Role WHERE ID = @ID";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         // Add parameters to prevent SQL injection
-                        command.Parameters.AddWithValue("@ID", SelectedItem.ID);
-                        command.Parameters.AddWithValue("@Username", SelectedItem.Username);
-                        command.Parameters.AddWithValue("@Password", SelectedItem.Password);
+                        command.Parameters.AddWithValue("@ID", ID);
+                        command.Parameters.AddWithValue("@Username", Username);
+                        command.Parameters.AddWithValue("@Password", Password);
+                        command.Parameters.AddWithValue("@Role", SelectedRole.ID);
 
                         int rowsAffected = command.ExecuteNonQuery();
 
@@ -194,12 +232,16 @@ namespace mvvm_demo.ViewModels
                     MessageBox.Show("Error: " + ex.Message);
                 }
             }
-            foreach (var item in List)
+            for (int i = 0; i < List.Count(); i++)
             {
-                if (item.ID == SelectedItem.ID)
+                if (List[i].ID == SelectedItem.ID)
                 {
-                    item.Username = SelectedItem.Username;
-                    item.Password = SelectedItem.Password;
+                    List[i] = new User {
+                        ID = ID,
+                        Username = Username,
+                        Password = Password,
+                        UserRole = SelectedRole
+                    };
                     return;
                 }
             }

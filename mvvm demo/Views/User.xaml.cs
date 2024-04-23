@@ -17,9 +17,9 @@ namespace mvvm_demo.Views
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class Window1 : Window
+    public partial class UserWindow : Window
     {
-        public Window1()
+        public UserWindow()
         {
             InitializeComponent();
         }

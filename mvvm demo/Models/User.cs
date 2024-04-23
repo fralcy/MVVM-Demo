@@ -25,6 +25,12 @@ namespace mvvm_demo.Models
 			get { return _Password; }
 			set { _Password = value; OnPropertyChanged("Paasword"); }
 		}
+        private Role _UserRole;
+        public Role UserRole
+        {
+            get { return _UserRole; }
+            set { _UserRole = value; OnPropertyChanged("Role"); }
+        }
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
